@@ -2,20 +2,26 @@ import time
 import sys
 import random
 
+from . import Actions
 from . import Agents
 from . import Gui
-from . import Movement
 
 class AnnE:
-    def __init__(self, config):
-        self.config = config
-        self.agents = []
 
+    def __init__(self, config):
+        # init variables
+        self.agents = []
+        self.config = config
+
+        # set up required modules
+        #   Gui, Movement
         gui_config = self.__pluck(config, ["size"])
         self.gui = Gui.DefaultGui(self, gui_config)
 
-    def add_agent(self):
-        self.agents.append(Agents.Agent_0(self.__random_pos()))
+        # setup test agents
+        new_agent = Agents.Agent_0(self, self.__random_pos())
+        new_agent.add_action(Actions.PyGame.Step2D(new_agent))
+        self.agents.append(new_agent)
 
     def run(self):
         frames = 0
@@ -23,6 +29,8 @@ class AnnE:
 
         # game loop
         while True:
+            if (frames % 30 == 0):
+                self.agents[0].act()
             # game logic computations go here
             if self.gui.quit():
                 sys.exit()

@@ -5,12 +5,12 @@ eco_config = {
         "fps_cap": 60
         }
 
+# IDE level. Define IDE functions here
+#   eg add_agents, configure, run, evolve etc
 def __main__():
     anne = AnnE(eco_config)
 
-    for _ in range(20):
-        anne.add_agent()
-
+    # ADD IDE code here
     anne.run()
 
 __main__()
