@@ -6,11 +6,11 @@ eco_config = {
         }
 
 def __main__():
-    eco = AnnE(eco_config)
+    anne = AnnE(eco_config)
 
     for _ in range(20):
-        eco.add_agent()
+        anne.add_agent()
 
-    eco.run()
+    anne.run()
 
 __main__()
