@@ -1,7 +1,3 @@
-#== Global dependencies
-
-#==
-
 # TODO: Look into other planes for movement alon them
 # Action that alters an agent's position along [x,y]
 # Config options:

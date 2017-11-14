@@ -1,8 +1,10 @@
 from AnnEcosystem import AnnE
 
 eco_config = {
-        "size": [640, 480],
-        "fps_cap": 60
+        "environment": {
+            "size": [640, 480],
+            "fps_cap": 60
+            }
         }
 
 # IDE level. Define IDE functions here

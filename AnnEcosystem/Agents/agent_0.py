@@ -1,9 +1,5 @@
 #== Global dependencies
-import tensorflow as tf
-import pygame, sys
-import random
-
-from pygame.locals import *
+import pygame
 #==
 
 # Base agent
@@ -14,18 +10,17 @@ class Agent_0:
         self.eco = 200
         self.position = pos
 
+        # Mutable attributes
+        self.geometry = ["circle", [5]]
         self.actions = []
-        self.action_opts = []
-
-    def draw(self, surf):
-        pygame.draw.circle(surf, (0,255,0), self.position, 5)
 
     def add_action(self, action):
         self.actions.append(action)
-        # TODO: add mutation on action options
-        self.action_opts.append(action.options[0])
 
     # TODO: set this to accept action index so different actions
     #       can be used from this function
     def act(self):
+        if (len(self.actions) == 0):
+            return False
         self.actions[0].do()
+        return True

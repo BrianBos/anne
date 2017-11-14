@@ -4,7 +4,7 @@ import random
 
 from . import Actions
 from . import Agents
-from . import Gui
+from . import Environments
 
 class AnnE:
 
@@ -15,8 +15,8 @@ class AnnE:
 
         # set up required modules
         #   Gui, Movement
-        gui_config = self.__pluck(config, ["size"])
-        self.gui = Gui.DefaultGui(self, gui_config)
+        env_config = self.__pluck(config["environment"], ["size"])
+        self.env = Environments.PygameEnv(self, env_config)
 
         # setup test agents
         new_agent = Agents.Agent_0(self, self.__random_pos())
@@ -29,14 +29,15 @@ class AnnE:
 
         # game loop
         while True:
+            # game logic computations go here
             if (frames % 30 == 0):
                 self.agents[0].act()
-            # game logic computations go here
-            if self.gui.quit():
+
+            if self.env.quit():
                 sys.exit()
 
             # rendering
-            self.gui.render()
+            self.env.render()
 
             # fps monitoring
             # based on fps_cap and time
@@ -46,7 +47,7 @@ class AnnE:
                 frames = 0
                 prev_time = time.time()
             else:
-                if (frames == self.config["fps_cap"]):
+                if (frames == self.config["environment"]["fps_cap"]):
                     print("f: %d" % frames)
                     print("e: %f" % elapsed_time)
                     frames = 0
@@ -55,7 +56,7 @@ class AnnE:
                     time.sleep(wait_time)
 
     # HELPERS:
-    def __random_pos(self): return [random.randint(0, self.config["size"][0]), random.randint(0, self.config["size"][1])]
+    def __random_pos(self): return [random.randint(0, self.config["environment"]["size"][0]), random.randint(0, self.config["environment"]["size"][1])]
 
     def __pluck(self, d, keys):
         new_dict = {}
