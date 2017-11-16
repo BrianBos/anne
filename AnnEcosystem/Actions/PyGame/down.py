@@ -4,12 +4,11 @@
 # [
 #   displacement(2D Vector) eg [0,0]
 # ]
-class Step2D:
+class Down:
     def __init__(self, agent):
         self.agent = agent
         self.options = [[5,0]]
 
     def do(self):
-        self.agent.position[0] += self.options[0][0]
-        self.agent.position[1] += self.options[0][1]
+        self.agent.position[1] += 5
 
