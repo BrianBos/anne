@@ -1,7 +1,7 @@
 from AnnEcosystem import AnnE
 
 eco_config = {
-        "environment": {
+        "game": {
             "size": [640, 480],
             "fps_cap": 60
             }

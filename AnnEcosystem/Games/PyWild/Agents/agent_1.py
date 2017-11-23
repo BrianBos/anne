@@ -1,10 +1,5 @@
-#== Global dependencies
-import pygame
-#==
-
-# Base agent
-# contains the basic functions needed to operate in the ecosystem
-class Agent_0:
+# Mobile agent
+class Agent_1:
     def __init__(self, anne, pos):
         self.anne = anne
         self.eco = 200
@@ -13,7 +8,12 @@ class Agent_0:
         self.nn = None
 
         # Mutable attributes
-        self.geometry = ["circle", [5]]
+        self.skin = {
+            "type": "circle",
+            "radius": 10,
+            "color": (255,255,0)
+        }
+        self.coll_box = [10,10]
         self.actions = []
 
     def add_action(self, action):

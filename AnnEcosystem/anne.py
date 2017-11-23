@@ -2,66 +2,47 @@ import time
 import sys
 import random
 
-from . import Actions
-from . import Agents
-from . import Environments
+from .Games import PyWildInt
 from . import NeuralNetworks
 
 class AnnE:
-
     def __init__(self, config):
         # init variables
         self.agents = []
         self.config = config
 
-        # set up required modules
-        #   Gui, Movement
-        env_config = self.__pluck(config["environment"], ["size"])
-        self.env = Environments.PygameEnv(self, env_config)
+        # initialize required modules
+        # init game
+        game_config = self.__pluck(config["game"], ["size"])
+        self.game = PyWildInt(self, game_config)
+        self.game_actions = self.game.actions
+        self.game_agents = self.game.agents
 
         # setup test agents
-        new_agent = Agents.Agent_0(self, self.__random_pos())
-        new_agent.add_action(Actions.PyGame.Up(new_agent))
-        new_agent.add_action(Actions.PyGame.Down(new_agent))
-        new_agent.add_action(Actions.PyGame.Left(new_agent))
-        new_agent.add_action(Actions.PyGame.Right(new_agent))
-        new_agent.add_nn(NeuralNetworks.TensorFlowNN.Dense({"dna": [4, [3, 2], 4]}))
-        self.agents.append(new_agent)
+        self.__populate()
 
     def run(self):
-        frames = 0
         prev_time = time.time()
 
         # game loop
         while True:
-            if self.env.quit():
+            if self.game.quit():
                 sys.exit()
 
             elapsed_time = time.time() - prev_time
             if (elapsed_time >= 1.0):
-                frames = 0
-                prev_time = time.time()
-                continue
-            elif (frames == self.config["environment"]["fps_cap"]):
-                print("f: %d" % frames)
-                print("e: %f" % elapsed_time)
-                frames = 0
-
-                wait_time = (1.0 - elapsed_time) * 1.0
-                time.sleep(wait_time)
                 prev_time = time.time()
                 continue
 
             # TODO: add actions/sec functionality
             # run agent actions depending on their frame cost
-            self.agents[0].act()
+            for agent in self.agents:
+                agent.act()
 
-            self.env.render()
-
-            frames += 1
+            self.game.step()
 
     # HELPERS:
-    def __random_pos(self): return [random.randint(0, self.config["environment"]["size"][0]), random.randint(0, self.config["environment"]["size"][1])]
+    def __random_pos(self): return [random.randint(0, self.config["game"]["size"][0] - 20), random.randint(0, self.config["game"]["size"][1] - 20)]
 
     def __pluck(self, d, keys):
         new_dict = {}
@@ -69,3 +50,16 @@ class AnnE:
             new_dict[keys[i]] = d[keys[i]]
         return new_dict
 
+    def __populate(self):
+        for _ in range(20):
+            new_agent = self.game_agents[0](self, self.__random_pos())
+            # new_agent.add_nn(NeuralNetworks.TensorFlowNN.Dense({"dna": [4, [3, 2], 4]}))
+            self.agents.append(new_agent)
+        
+        new_agent = self.game_agents[1](self, self.__random_pos())
+        new_agent.add_action(self.game_actions[0](new_agent))
+        new_agent.add_action(self.game_actions[1](new_agent))
+        new_agent.add_action(self.game_actions[2](new_agent))
+        new_agent.add_action(self.game_actions[3](new_agent))
+        new_agent.add_nn(NeuralNetworks.TensorFlowNN.Dense({"dna": [4, [3, 2], 4]}))
+        self.agents.append(new_agent)
