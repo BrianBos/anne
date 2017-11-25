@@ -1,1 +1,1 @@
-from .anne import AnnE
+from .anne import Anne

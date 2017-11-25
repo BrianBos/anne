@@ -5,9 +5,9 @@
 #   displacement(2D Vector) eg [0,0]
 # ]
 class Down:
-    def __init__(self, agent):
-        self.agent = agent
+  def __init__(self, agent):
+    self.agent = agent
 
-    def do(self):
-        self.agent.position[1] += 5
+  def do(self):
+    self.agent.position[1] += 5
 
