@@ -32,9 +32,8 @@ class AnnE:
         while True:
             if self.game.quit():
                 sys.exit()
+            print(self.ticks)
 
-            # TODO: add actions/tick functionality
-            # run agent actions depending on their frame cost
             for agent in self.agents:
                 agent.act()
                 agent.decay()

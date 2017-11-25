@@ -11,9 +11,14 @@ class Agent_1:
         self.nn = None
         self.position = pos
 
-        # energy, the driving force of agent
-        self.energy = 200
-        self.entropy = 10  # energy lost per tick
+        # energy, the driving force of an agent
+        self.energy = 42
+        self.entropy = 0.1  # energy lost per tick
+
+        # regulate thoughts agents can have
+        # used in act()
+        self.assessed_action = None
+        self.ticks_per_thought = 5
 
         self.skin = {
             "type": "circle",
@@ -29,19 +34,27 @@ class Agent_1:
     def add_nn(self, nn):
         self.nn = nn
 
-    # TODO: set this to accept action index so different actions
-    #       can be used from this function
     def act(self):
-        assessed_action = self.nn.assess()[0]
-
+        # return false if there are no actions to perform
         if (len(self.actions) == 0):
             return False
-        self.actions[assessed_action].do()
+
+        # update assessed_action based on ticks_per_thought
+        if self.age() % self.ticks_per_thought == 0:
+            self.assessed_action = self.nn.assess()[0]
+
+        self.actions[self.assessed_action].do()
         return True
+
+    def age(self):
+        return self.anne.ticks - self.birth_tick
 
     # method to decay agent and bring about it's death
     # reduce energy based on self.entropy 
     # this method should be called at every tick of the game
     def decay(self):
         self.energy -= self.entropy
+
+        if self.energy < 0:
+            self.anne.agents.remove(self)
         return
