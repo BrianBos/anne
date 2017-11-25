@@ -10,6 +10,8 @@ from .PyWild import Agents
 
 # Sample game that uses pygame
 class PyWildInt:
+    # provide list of available agents and actions
+    # to enable anne evolve the agents by adding actions
     agents = [Agents.Agent_0, Agents.Agent_1]
     actions = [Actions.Up, Actions.Down, Actions.Left, Actions.Right]
 

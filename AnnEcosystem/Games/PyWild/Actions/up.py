@@ -7,7 +7,6 @@
 class Up:
     def __init__(self, agent):
         self.agent = agent
-        self.options = [[5,0]]
 
     def do(self):
         self.agent.position[1] -= 5

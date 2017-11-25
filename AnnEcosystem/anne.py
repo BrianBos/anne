@@ -1,9 +1,8 @@
-import time
 import sys
 import random
 
 from .Games import PyWildInt
-from . import NeuralNetworks
+from .evo_engine import EvoEngine
 
 class AnnE:
     def __init__(self, config):
@@ -11,35 +10,37 @@ class AnnE:
         self.agents = []
         self.config = config
 
+        # replacement for time since processing
+        # speed varies a lot
+        # used for time(tick) dependent methods
+        self.ticks = 0
+
         # initialize required modules
         # init game
         game_config = self.__pluck(config["game"], ["size"])
         self.game = PyWildInt(self, game_config)
         self.game_actions = self.game.actions
         self.game_agents = self.game.agents
+        # evolution engine
+        self.evo_engine = EvoEngine(self)
 
         # setup test agents
         self.__populate()
 
     def run(self):
-        prev_time = time.time()
-
         # game loop
         while True:
             if self.game.quit():
                 sys.exit()
 
-            elapsed_time = time.time() - prev_time
-            if (elapsed_time >= 1.0):
-                prev_time = time.time()
-                continue
-
-            # TODO: add actions/sec functionality
+            # TODO: add actions/tick functionality
             # run agent actions depending on their frame cost
             for agent in self.agents:
                 agent.act()
+                agent.decay()
 
             self.game.step()
+            self.ticks += 1
 
     # HELPERS:
     def __random_pos(self): return [random.randint(0, self.config["game"]["size"][0] - 20), random.randint(0, self.config["game"]["size"][1] - 20)]
@@ -51,15 +52,13 @@ class AnnE:
         return new_dict
 
     def __populate(self):
+        # add 'food' agents ie source of energy
         for _ in range(20):
             new_agent = self.game_agents[0](self, self.__random_pos())
-            # new_agent.add_nn(NeuralNetworks.TensorFlowNN.Dense({"dna": [4, [3, 2], 4]}))
             self.agents.append(new_agent)
         
-        new_agent = self.game_agents[1](self, self.__random_pos())
-        new_agent.add_action(self.game_actions[0](new_agent))
-        new_agent.add_action(self.game_actions[1](new_agent))
-        new_agent.add_action(self.game_actions[2](new_agent))
-        new_agent.add_action(self.game_actions[3](new_agent))
-        new_agent.add_nn(NeuralNetworks.TensorFlowNN.Dense({"dna": [4, [3, 2], 4]}))
-        self.agents.append(new_agent)
+        # add mobile agent
+        for _ in range(5):
+            new_agent = self.game_agents[1](self, self.__random_pos())
+            self.evo_engine.seed(new_agent)
+            self.agents.append(new_agent)
